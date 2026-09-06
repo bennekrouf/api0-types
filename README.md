@@ -3,6 +3,18 @@
 The wire types shared by the api0 gateway, store and SDK. One definition per
 payload, so the three cannot drift apart.
 
+```toml
+[dependencies]
+api0-types = { git = "https://github.com/bennekrouf/api0-types", rev = "<commit>" }
+```
+
+Consumers pin an exact `rev` rather than tracking a branch: a wire-type change
+must be a deliberate, reviewable bump in each service, not something that
+arrives on the next `cargo update`. To change a type — edit here, push, then
+bump the `rev` in the gateway, the store and the SDK. For local iteration,
+override the git source with a `[patch]` section pointing at your working copy
+(the SDK's `Cargo.toml` carries a commented-out example).
+
 Dependency-light on purpose — serde, serde_json, chrono, uuid — no web
 framework and no database driver, so any api0 component can depend on it.
 
