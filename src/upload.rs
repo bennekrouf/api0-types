@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Body of `POST /api/upload` on both the gateway and the store.
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct UploadRequest {
     pub email: String,
     pub file_name: String,
@@ -12,7 +12,7 @@ pub struct UploadRequest {
 }
 
 /// The gateway's `POST /api/upload` result — what SDK callers see.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UploadResponse {
     pub success: bool,
     pub message: String,
@@ -22,7 +22,7 @@ pub struct UploadResponse {
 
 /// The store's own upload result. Shaped differently from [`UploadResponse`]:
 /// the store reports raw import counts, the gateway reports what it added.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct StoreUploadResponse {
     pub success: bool,
     pub message: String,
@@ -30,7 +30,7 @@ pub struct StoreUploadResponse {
     pub group_count: i32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ReferenceData {
     pub id: String,
     pub email: String,
@@ -39,7 +39,7 @@ pub struct ReferenceData {
     pub created_at: chrono::DateTime<chrono::Utc>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct UploadReferenceDataRequest {
     pub email: String,
     pub file_name: String,
@@ -47,7 +47,7 @@ pub struct UploadReferenceDataRequest {
     pub file_content: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UploadReferenceDataResponse {
     pub success: bool,
     pub message: String,

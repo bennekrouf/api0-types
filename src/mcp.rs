@@ -5,7 +5,7 @@ use serde_json::Value;
 
 pub const MCP_PROTOCOL_VERSION: &str = "2024-11-05";
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct JsonRpcRequest {
     pub jsonrpc: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -26,7 +26,7 @@ impl JsonRpcRequest {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct JsonRpcResponse {
     pub jsonrpc: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,7 +37,7 @@ pub struct JsonRpcResponse {
     pub error: Option<JsonRpcError>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct JsonRpcError {
     pub code: i32,
     pub message: String,
@@ -79,7 +79,7 @@ pub mod rpc_error_codes {
 }
 
 /// One entry of a `tools/list` result.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct McpTool {
     pub name: String,
     #[serde(default)]
@@ -88,13 +88,13 @@ pub struct McpTool {
     pub input_schema: Value,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ToolsListResult {
     pub tools: Vec<McpTool>,
 }
 
 /// Params of a `tools/call` request.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ToolCallParams {
     pub name: String,
     #[serde(default)]
@@ -102,7 +102,7 @@ pub struct ToolCallParams {
 }
 
 /// One content block of a `tools/call` result.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ToolContent {
     #[serde(rename = "type")]
     pub content_type: String,
@@ -110,7 +110,7 @@ pub struct ToolContent {
     pub text: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ToolCallResult {
     pub content: Vec<ToolContent>,
 }

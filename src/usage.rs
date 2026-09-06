@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct TokenUsage {
     pub estimated: bool,
     pub input_tokens: i64,
@@ -11,7 +11,7 @@ pub struct TokenUsage {
     pub total_tokens: i64,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct LogApiUsageRequest {
     pub key_id: String,
     pub email: String,
@@ -33,14 +33,14 @@ pub struct LogApiUsageRequest {
     pub metadata: Option<serde_json::Value>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct LogApiUsageResponse {
     pub success: bool,
     pub message: String,
     pub log_id: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct ApiUsageLog {
     pub id: String,
     pub key_id: String,
@@ -64,7 +64,7 @@ pub struct ApiUsageLog {
     pub consumer_id: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct UpdateCreditRequest {
     pub email: String,
     /// Explicit tenant attribution (optional, defaults to the user's personal tenant).
@@ -82,7 +82,7 @@ fn default_action_type() -> String {
     "unknown".to_string()
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct CreditTransaction {
     pub id: i64,
     pub tenant_id: String,
@@ -94,13 +94,13 @@ pub struct CreditTransaction {
     pub created_at: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct CreatePaymentIntentRequest {
     pub amount: i64,
     pub currency: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct ConfirmPaymentRequest {
     pub payment_intent_id: String,
     pub amount: i64,

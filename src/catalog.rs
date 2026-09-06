@@ -40,7 +40,7 @@ where
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct Parameter {
     pub name: String,
     #[serde(default = "String::new")]
@@ -54,7 +54,7 @@ pub struct Parameter {
     pub alternatives: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct Endpoint {
     #[serde(default = "String::new")] // Allow empty, will be auto-generated
     pub id: String,
@@ -76,7 +76,7 @@ pub struct Endpoint {
     pub group_id: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct ApiGroup {
     #[serde(default = "generate_uuid")]
     pub id: String,
@@ -89,32 +89,32 @@ pub struct ApiGroup {
     pub tenant_id: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct ApiGroupWithEndpoints {
     #[serde(flatten)]
     pub group: ApiGroup,
     pub endpoints: Vec<Endpoint>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct ApiStorage {
     pub api_groups: Vec<ApiGroupWithEndpoints>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct AddApiGroupRequest {
     pub email: String,
     pub api_group: ApiGroupWithEndpoints,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct UpdateApiGroupRequest {
     pub email: String,
     pub group_id: String,
     pub api_group: ApiGroupWithEndpoints,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct UserPreferences {
     pub email: String,
     /// Ids of default endpoints the user has hidden.
@@ -122,7 +122,7 @@ pub struct UserPreferences {
     pub default_tenant_id: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct UpdatePreferenceRequest {
     pub email: String,
     /// "hide_default" or "show_default"

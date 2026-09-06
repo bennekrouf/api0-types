@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct Tenant {
     pub id: String,
     pub name: String,
@@ -10,7 +10,7 @@ pub struct Tenant {
     pub created_at: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct TenantUser {
     pub tenant_id: String,
     pub email: String,
@@ -18,7 +18,7 @@ pub struct TenantUser {
     pub role: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct ApiKeyInfo {
     pub id: String,
     pub key_prefix: String,
@@ -30,7 +30,7 @@ pub struct ApiKeyInfo {
 }
 
 /// The `/api/user/key/<tenant_id>` payload: keys plus the tenant's balance.
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct KeyPreference {
     pub has_keys: bool,
     pub active_key_count: usize,
@@ -40,7 +40,7 @@ pub struct KeyPreference {
     pub tenant_name: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct GenerateKeyRequest {
     pub email: String,
     pub key_name: String,
@@ -56,7 +56,7 @@ pub struct GenerateKeyRequest {
 ///
 /// `keyPrefix` is camelCase on the wire — that is the shape the dashboard and
 /// the OAuth token exchange already consume.
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct GeneratedKey {
     #[serde(default)]
     pub success: bool,
@@ -67,14 +67,14 @@ pub struct GeneratedKey {
     pub key_prefix: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct ValidateKeyRequest {
     pub api_key: String,
     #[serde(default)]
     pub expected_tenant_id: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct ValidateKeyResponse {
     pub valid: bool,
     pub email: Option<String>,
@@ -89,7 +89,7 @@ pub struct ValidateKeyResponse {
 
 /// A provider tenant as resolved from an OAuth `client_id`
 /// (`GET /api/tenant/by-client-id/<client_id>`).
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct ProviderInfo {
     pub tenant_id: String,
     #[serde(default)]
@@ -102,7 +102,7 @@ pub struct ProviderInfo {
 }
 
 /// Body of `PUT /api/user/mcp-client-id`.
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct SetClientIdRequest {
     pub email: String,
     #[serde(default)]
@@ -132,7 +132,7 @@ impl PlatformRole {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct UserRole {
     pub email: String,
     pub role: PlatformRole,
@@ -142,7 +142,7 @@ pub struct UserRole {
     pub granted_at: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
 pub struct SetRoleRequest {
     pub email: String,
     pub role: PlatformRole,

@@ -81,7 +81,7 @@ impl ErrorCode {
 }
 
 /// The body of every failed api0 response.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiError {
     /// Always `false`. Present so clients can branch on a single field.
     #[serde(default)]
@@ -161,7 +161,7 @@ impl std::error::Error for ApiError {}
 ///
 /// Serialises to `{"success": true}` — the shape existing dashboard code
 /// already checks for.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Success {
     pub success: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
