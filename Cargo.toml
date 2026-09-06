@@ -1,0 +1,12 @@
+[package]
+name = "api0-types"
+version = "0.1.0"
+edition = "2021"
+description = "Shared request/response types and the uniform error envelope for the api0 platform (gateway, store, SDK)."
+license = "MIT"
+
+[dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4"] }
