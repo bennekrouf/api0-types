@@ -74,6 +74,30 @@ pub struct Endpoint {
     pub suggested_sentence: String,
     #[serde(default = "String::new")] // Allow empty, will be set by parent group
     pub group_id: String,
+    /// Content-Type for the outgoing request body. `None` means `application/json`.
+    ///
+    /// Set it when the backend wants something else — Azure DevOps work items,
+    /// for instance, take `application/json-patch+json`.
+    #[serde(default)]
+    pub content_type: Option<String>,
+    /// JSON body to send, as a string, with `{param}` placeholders filled from the
+    /// call's arguments. `None` means send the arguments object as-is.
+    ///
+    /// This is what lets an endpoint describe a body whose shape is not a flat
+    /// object — a JSON Patch array, say. Placeholders with no matching argument
+    /// cause their array element or object entry to be dropped, so optional
+    /// fields can simply be left out of a call.
+    #[serde(default)]
+    pub body_template: Option<String>,
+    /// Whether api0's own identity headers — `X-Internal-Secret`, `X-User-Email`,
+    /// `X-Tenant-Id` — travel with the call. `None` inherits the group's setting,
+    /// and a group that says nothing means `true`.
+    ///
+    /// Set it to `false` for anything pointed at a third-party API: those headers
+    /// identify the caller to a *first-party* backend and carry the internal
+    /// secret, which has no business reaching someone else's cloud.
+    #[serde(default)]
+    pub forward_identity: Option<bool>,
 }
 
 #[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
@@ -87,6 +111,10 @@ pub struct ApiGroup {
     pub base: String,
     #[serde(default = "String::new")]
     pub tenant_id: String,
+    /// Default `forward_identity` for the group's endpoints. An endpoint that
+    /// sets its own wins; `None` here means `true`, the historical behaviour.
+    #[serde(default)]
+    pub forward_identity: Option<bool>,
 }
 
 #[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
@@ -159,6 +187,7 @@ mod tests {
                 description: String::new(),
                 base: String::new(),
                 tenant_id: "t1".into(),
+                forward_identity: None,
             },
             endpoints: vec![],
         })
