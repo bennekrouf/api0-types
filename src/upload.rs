@@ -9,6 +9,14 @@ pub struct UploadRequest {
     pub file_name: String,
     /// Base64-encoded file content.
     pub file_content: String,
+    /// Which tenant the groups belong to. `None` keeps the historical behaviour:
+    /// the caller's default tenant.
+    ///
+    /// It matters because MCP tool visibility is per tenant — endpoints imported
+    /// into a personal tenant are invisible to a connector opened against an
+    /// organisation one. The caller must be a member of the tenant named here.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tenant_id: Option<String>,
 }
 
 /// The gateway's `POST /api/upload` result — what SDK callers see.
