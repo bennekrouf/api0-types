@@ -27,7 +27,8 @@ pub use keys::{
 };
 pub use mcp::{
     JsonRpcError, JsonRpcRequest, JsonRpcResponse, McpTool, ToolCallParams, ToolCallResult,
-    ToolContent, ToolsListResult, MCP_PROTOCOL_VERSION,
+    ToolContent, ToolsListResult, MCP_PROTOCOL_VERSION, PROTOCOL_VERSION_HEADER,
+    SUPPORTED_PROTOCOL_VERSIONS,
 };
 pub use upload::{
     ReferenceData, StoreUploadResponse, UploadReferenceDataRequest, UploadReferenceDataResponse,
