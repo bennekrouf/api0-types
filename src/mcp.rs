@@ -3,7 +3,33 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-pub const MCP_PROTOCOL_VERSION: &str = "2024-11-05";
+/// The newest MCP revision api0 speaks, and what its own clients request.
+pub const MCP_PROTOCOL_VERSION: &str = "2025-06-18";
+
+/// Every revision the gateway accepts, newest first.
+///
+/// The gateway serves only tools over Streamable HTTP, a subset these revisions
+/// agree on. 2025-06-18 removed JSON-RPC batching (never accepted here) and made
+/// clients send the `MCP-Protocol-Version` header after initialize. Older
+/// revisions stay so a connector set up against them keeps working.
+pub const SUPPORTED_PROTOCOL_VERSIONS: &[&str] = &["2025-06-18", "2025-03-26", "2024-11-05"];
+
+/// The HTTP header a client sends on every request after `initialize`.
+pub const PROTOCOL_VERSION_HEADER: &str = "MCP-Protocol-Version";
+
+/// Version negotiation, as the spec defines it: answer with the revision the
+/// client asked for when it is supported, otherwise with the newest one, and let
+/// the client decide whether it can continue.
+pub fn negotiate_protocol_version(requested: Option<&str>) -> &'static str {
+    requested
+        .and_then(|r| SUPPORTED_PROTOCOL_VERSIONS.iter().find(|v| **v == r))
+        .copied()
+        .unwrap_or(MCP_PROTOCOL_VERSION)
+}
+
+pub fn is_supported_protocol_version(version: &str) -> bool {
+    SUPPORTED_PROTOCOL_VERSIONS.contains(&version)
+}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct JsonRpcRequest {
@@ -129,6 +155,24 @@ mod tests {
         .unwrap();
         assert!(json.get("inputSchema").is_some());
         assert!(json.get("input_schema").is_none());
+    }
+
+    #[test]
+    fn a_supported_version_is_echoed_back() {
+        assert_eq!(negotiate_protocol_version(Some("2025-03-26")), "2025-03-26");
+        assert_eq!(negotiate_protocol_version(Some("2024-11-05")), "2024-11-05");
+    }
+
+    #[test]
+    fn an_unknown_or_missing_version_gets_the_newest() {
+        assert_eq!(negotiate_protocol_version(Some("2099-01-01")), MCP_PROTOCOL_VERSION);
+        assert_eq!(negotiate_protocol_version(None), MCP_PROTOCOL_VERSION);
+    }
+
+    #[test]
+    fn the_advertised_version_is_one_that_is_accepted() {
+        assert!(is_supported_protocol_version(MCP_PROTOCOL_VERSION));
+        assert_eq!(SUPPORTED_PROTOCOL_VERSIONS[0], MCP_PROTOCOL_VERSION);
     }
 
     #[test]
