@@ -100,7 +100,10 @@ pub struct Endpoint {
     pub forward_identity: Option<bool>,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+/// `Default` leaves `id` empty rather than generating one as deserialising does:
+/// a default should not be random, and the store assigns an id to any group
+/// that arrives without one.
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct ApiGroup {
     #[serde(default = "generate_uuid")]
     pub id: String,
@@ -117,32 +120,64 @@ pub struct ApiGroup {
     pub forward_identity: Option<bool>,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+// Hand-written where a serde default is not the type's zero value, so that
+// `Default` and a minimal payload agree. The tests below hold them together.
+impl Default for Parameter {
+    fn default() -> Self {
+        Self {
+            name: String::new(),
+            description: String::new(),
+            required: default_false_string(),
+            alternatives: Vec::new(),
+        }
+    }
+}
+
+impl Default for Endpoint {
+    fn default() -> Self {
+        Self {
+            id: String::new(),
+            text: String::new(),
+            description: String::new(),
+            parameters: Vec::new(),
+            verb: default_verb(),
+            base: String::new(),
+            path: String::new(),
+            suggested_sentence: String::new(),
+            group_id: String::new(),
+            content_type: None,
+            body_template: None,
+            forward_identity: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct ApiGroupWithEndpoints {
     #[serde(flatten)]
     pub group: ApiGroup,
     pub endpoints: Vec<Endpoint>,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct ApiStorage {
     pub api_groups: Vec<ApiGroupWithEndpoints>,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Default)]
 pub struct AddApiGroupRequest {
     pub email: String,
     pub api_group: ApiGroupWithEndpoints,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Default)]
 pub struct UpdateApiGroupRequest {
     pub email: String,
     pub group_id: String,
     pub api_group: ApiGroupWithEndpoints,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct UserPreferences {
     pub email: String,
     /// Ids of default endpoints the user has hidden.
@@ -150,7 +185,7 @@ pub struct UserPreferences {
     pub default_tenant_id: Option<String>,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct UpdatePreferenceRequest {
     pub email: String,
     /// "hide_default" or "show_default"
@@ -176,6 +211,14 @@ mod tests {
     fn endpoint_accepts_method_as_an_alias_for_verb() {
         let e: Endpoint = serde_json::from_str(r#"{"text":"t","method":"POST"}"#).unwrap();
         assert_eq!(e.verb, "POST");
+    }
+
+    #[test]
+    fn defaults_match_a_minimal_payload() {
+        let e: Endpoint = serde_json::from_str(r#"{"text":""}"#).unwrap();
+        assert_eq!(e, Endpoint::default());
+        let p: Parameter = serde_json::from_str(r#"{"name":""}"#).unwrap();
+        assert_eq!(p, Parameter::default());
     }
 
     #[test]

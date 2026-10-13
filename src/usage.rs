@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct TokenUsage {
     pub estimated: bool,
     pub input_tokens: i64,
@@ -11,7 +11,7 @@ pub struct TokenUsage {
     pub total_tokens: i64,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct LogApiUsageRequest {
     pub key_id: String,
     pub email: String,
@@ -33,14 +33,14 @@ pub struct LogApiUsageRequest {
     pub metadata: Option<serde_json::Value>,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct LogApiUsageResponse {
     pub success: bool,
     pub message: String,
     pub log_id: Option<String>,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct ApiUsageLog {
     pub id: String,
     pub key_id: String,
@@ -82,7 +82,19 @@ fn default_action_type() -> String {
     "unknown".to_string()
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+impl Default for UpdateCreditRequest {
+    fn default() -> Self {
+        Self {
+            email: String::new(),
+            tenant_id: None,
+            amount: 0,
+            action_type: default_action_type(),
+            description: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct CreditTransaction {
     pub id: i64,
     pub tenant_id: String,
@@ -94,14 +106,26 @@ pub struct CreditTransaction {
     pub created_at: String,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct CreatePaymentIntentRequest {
     pub amount: i64,
     pub currency: String,
 }
 
-#[derive(Debug, Serialize, PartialEq, Deserialize, Clone)]
+#[derive(Debug, Serialize, PartialEq, Deserialize, Clone, Default)]
 pub struct ConfirmPaymentRequest {
     pub payment_intent_id: String,
     pub amount: i64,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn credit_request_default_matches_a_minimal_payload() {
+        let parsed: UpdateCreditRequest =
+            serde_json::from_str(r#"{"email":"","amount":0}"#).unwrap();
+        assert_eq!(parsed, UpdateCreditRequest::default());
+    }
 }

@@ -18,6 +18,27 @@ override the git source with a `[patch]` section pointing at your working copy
 Dependency-light on purpose — serde, serde_json, chrono, uuid — no web
 framework and no database driver, so any api0 component can depend on it.
 
+## Adding a field without breaking consumers
+
+Every type here implements `Default`, and consumers build them with
+`..Default::default()`:
+
+```rust
+UploadResponse { success: true, message, ..Default::default() }
+```
+
+So a new field breaks nobody: services that do not set it keep compiling on
+their current `rev`, and only the one that needs it has to bump. Two rules keep
+that true:
+
+1. **A new field must be optional on the wire** — `Option<_>`, or
+   `#[serde(default)]` — so a sender on an older `rev` still parses.
+2. **A new type derives `Default`**, or implements it by hand when a serde
+   default is not the zero value (`Endpoint::verb` is `"GET"`), with a test
+   that the two agree. `every_wire_type_has_a_default` in `lib.rs` lists them.
+
+Renaming or removing a field is still breaking; that needs the coordinated bump.
+
 ## The error contract
 
 `ApiError` defines the platform-wide failure envelope. Every api0 HTTP service

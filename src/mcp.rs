@@ -41,6 +41,29 @@ pub struct JsonRpcRequest {
     pub params: Value,
 }
 
+// The envelopes default to the only protocol version there is, not "".
+impl Default for JsonRpcRequest {
+    fn default() -> Self {
+        Self {
+            jsonrpc: "2.0".to_string(),
+            id: None,
+            method: String::new(),
+            params: Value::Null,
+        }
+    }
+}
+
+impl Default for JsonRpcResponse {
+    fn default() -> Self {
+        Self {
+            jsonrpc: "2.0".to_string(),
+            id: None,
+            result: None,
+            error: None,
+        }
+    }
+}
+
 impl JsonRpcRequest {
     pub fn new(id: impl Into<Value>, method: impl Into<String>, params: Value) -> Self {
         Self {
@@ -63,7 +86,7 @@ pub struct JsonRpcResponse {
     pub error: Option<JsonRpcError>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct JsonRpcError {
     pub code: i32,
     pub message: String,
@@ -105,7 +128,7 @@ pub mod rpc_error_codes {
 }
 
 /// One entry of a `tools/list` result.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct McpTool {
     pub name: String,
     #[serde(default)]
@@ -114,13 +137,13 @@ pub struct McpTool {
     pub input_schema: Value,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct ToolsListResult {
     pub tools: Vec<McpTool>,
 }
 
 /// Params of a `tools/call` request.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct ToolCallParams {
     pub name: String,
     #[serde(default)]
@@ -128,7 +151,7 @@ pub struct ToolCallParams {
 }
 
 /// One content block of a `tools/call` result.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct ToolContent {
     #[serde(rename = "type")]
     pub content_type: String,
@@ -136,7 +159,7 @@ pub struct ToolContent {
     pub text: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct ToolCallResult {
     pub content: Vec<ToolContent>,
 }
