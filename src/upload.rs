@@ -26,6 +26,10 @@ pub struct UploadResponse {
     pub message: String,
     pub groups_added: Option<usize>,
     pub endpoints_added: Option<usize>,
+    /// Endpoints dropped because an earlier one in the same file had the same
+    /// verb and URL.
+    #[serde(default)]
+    pub duplicates_skipped: Option<usize>,
 }
 
 /// The store's own upload result. Shaped differently from [`UploadResponse`]:
@@ -36,6 +40,8 @@ pub struct StoreUploadResponse {
     pub message: String,
     pub imported_count: i32,
     pub group_count: i32,
+    #[serde(default)]
+    pub duplicates_skipped: i32,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
