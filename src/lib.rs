@@ -38,3 +38,63 @@ pub use usage::{
     ApiUsageLog, ConfirmPaymentRequest, CreatePaymentIntentRequest, CreditTransaction,
     LogApiUsageRequest, LogApiUsageResponse, TokenUsage, UpdateCreditRequest,
 };
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Every wire type implements `Default`, so consumers can build one with
+    /// `..Default::default()` and a field added here does not break them.
+    /// A new type missing from this list, or without `Default`, should fail review.
+    #[test]
+    fn every_wire_type_has_a_default() {
+        fn has_default<T: Default>() {}
+        has_default::<ApiError>();
+        has_default::<ErrorCode>();
+        has_default::<Success>();
+        has_default::<Parameter>();
+        has_default::<Endpoint>();
+        has_default::<ApiGroup>();
+        has_default::<ApiGroupWithEndpoints>();
+        has_default::<ApiStorage>();
+        has_default::<AddApiGroupRequest>();
+        has_default::<UpdateApiGroupRequest>();
+        has_default::<UserPreferences>();
+        has_default::<UpdatePreferenceRequest>();
+        has_default::<Tenant>();
+        has_default::<TenantUser>();
+        has_default::<ApiKeyInfo>();
+        has_default::<KeyPreference>();
+        has_default::<GenerateKeyRequest>();
+        has_default::<GeneratedKey>();
+        has_default::<ValidateKeyRequest>();
+        has_default::<ValidateKeyResponse>();
+        has_default::<ProviderInfo>();
+        has_default::<SetClientIdRequest>();
+        has_default::<PlatformRole>();
+        has_default::<UserRole>();
+        has_default::<SetRoleRequest>();
+        has_default::<UploadRequest>();
+        has_default::<UploadResponse>();
+        has_default::<StoreUploadResponse>();
+        has_default::<ReferenceData>();
+        has_default::<UploadReferenceDataRequest>();
+        has_default::<UploadReferenceDataResponse>();
+        has_default::<JsonRpcRequest>();
+        has_default::<JsonRpcResponse>();
+        has_default::<JsonRpcError>();
+        has_default::<McpTool>();
+        has_default::<ToolsListResult>();
+        has_default::<ToolCallParams>();
+        has_default::<ToolContent>();
+        has_default::<ToolCallResult>();
+        has_default::<TokenUsage>();
+        has_default::<LogApiUsageRequest>();
+        has_default::<LogApiUsageResponse>();
+        has_default::<ApiUsageLog>();
+        has_default::<UpdateCreditRequest>();
+        has_default::<CreditTransaction>();
+        has_default::<CreatePaymentIntentRequest>();
+        has_default::<ConfirmPaymentRequest>();
+    }
+}

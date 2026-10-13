@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// Unknown values deserialize to [`ErrorCode::Unknown`] so a client built against
 /// an older version of this crate never fails to parse a newer service's error.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ErrorCode {
     /// Missing or invalid credentials.
@@ -44,6 +44,7 @@ pub enum ErrorCode {
     Internal,
     /// A code this client does not know about.
     #[serde(other)]
+    #[default]
     Unknown,
 }
 
@@ -81,7 +82,7 @@ impl ErrorCode {
 }
 
 /// The body of every failed api0 response.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct ApiError {
     /// Always `false`. Present so clients can branch on a single field.
     #[serde(default)]
@@ -215,6 +216,12 @@ mod tests {
         let parsed: ApiError =
             serde_json::from_str(r#"{"success":false,"error":"legacy"}"#).unwrap();
         assert_eq!(parsed.code, ErrorCode::Unknown);
+    }
+
+    #[test]
+    fn default_error_matches_a_minimal_payload() {
+        let parsed: ApiError = serde_json::from_str(r#"{"error":""}"#).unwrap();
+        assert_eq!(parsed, ApiError::default());
     }
 
     #[test]
