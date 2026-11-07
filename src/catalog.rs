@@ -98,6 +98,13 @@ pub struct Endpoint {
     /// secret, which has no business reaching someone else's cloud.
     #[serde(default)]
     pub forward_identity: Option<bool>,
+    /// The fields of a JSON answer worth handing to the AI, by key name, kept
+    /// at any depth: `["value", "name", "referenceName"]` keeps a list's items'
+    /// names. `None` hands back the whole answer. The gateway applies it, and
+    /// gives the tool a `full_response` argument for the rare call that needs
+    /// everything.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub response_fields: Option<Vec<String>>,
 }
 
 /// `Default` leaves `id` empty rather than generating one as deserialising does:
@@ -148,6 +155,7 @@ impl Default for Endpoint {
             content_type: None,
             body_template: None,
             forward_identity: None,
+            response_fields: None,
         }
     }
 }
